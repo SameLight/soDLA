@@ -135,3 +135,7 @@ object read_ig_arb_Driver extends App {
 object read_eg_arb_Driver extends App {
     chisel3.Driver.execute(args, () => new read_eg_arb())
 }
+
+object write_ig_arb_Driver extends App {
+    chisel3.Driver.execute(args, () => new write_ig_arb(8,128))
+}
