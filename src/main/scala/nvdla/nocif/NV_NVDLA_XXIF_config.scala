@@ -5,7 +5,6 @@ class xxifConfiguration extends cdpConfiguration{
 
   val RDMA_MAX_NUM = 10
   val WDMA_MAX_NUM = 5
-  val WDMA_NUM = 8
 
   val FV_RAND_WR_PAUSE = false
 
@@ -17,6 +16,12 @@ class xxifConfiguration extends cdpConfiguration{
   if(NVDLA_CDP_ENABLE)    {RDMA_NUM += 1}
   if(NVDLA_RUBIK_ENABLE)  {RDMA_NUM += 1}
   if(NVDLA_BDMA_ENABLE)   {RDMA_NUM += 1}
+
+  var WDMA_NUM = 1
+  if(NVDLA_PDP_ENABLE)    {WDMA_NUM += 1}
+  if(NVDLA_CDP_ENABLE)    {WDMA_NUM += 1}
+  if(NVDLA_RUBIK_ENABLE)  {WDMA_NUM += 1}
+  if(NVDLA_BDMA_ENABLE)   {WDMA_NUM += 1}
 
   val NVDLA_DMA_RD_IG_PW = NVDLA_MEM_ADDRESS_WIDTH+11
   val NVDLA_DMA_WR_IG_PW = NVDLA_MEM_ADDRESS_WIDTH+13

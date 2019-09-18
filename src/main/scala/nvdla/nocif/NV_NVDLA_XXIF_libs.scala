@@ -42,6 +42,51 @@ class read_ig_arb extends Module {
         }
     }
 }
+class write_ig_arb(depth: Int, width: Int) extends Module {
+    val io = IO(new Bundle() {
+        val clk = Input(Clock())
+        val req = Input(Vec(depth, Bool()))
+        val wt = Input(Vec(depth, UInt(width.W)))
+        val gnt_busy = Input(Bool())
+        val gnt = Output(UInt(depth.W))
+    })
+
+    val req = VecInit((0 until depth)
+            map { i => io.req(i) & io.wt(i).orR })
+
+    val new_wt_left = VecInit((0 until depth)
+            map { i => io.wt(i) - 1.U })
+
+    withClock(io.clk) {
+        val gnt = Reg(UInt(depth.W))
+        val gnt_pre = RegInit(UInt(depth.W), 0.U)
+        val wrr_gnt = RegInit(UInt(depth.W), 0.U)
+        val wt_left = RegInit(UInt(width.W), 0.U)
+        val wt_left_nxt = Reg(UInt(width.W))
+
+        gnt := Fill(depth, !io.gnt_busy) & gnt_pre
+        io.gnt := gnt
+
+        wt_left_nxt := wt_left
+        when(wt_left === 0.U  | !((req.asUInt() & wrr_gnt).orR)) {
+            for(i<-0 until depth) {
+                when((1.U<< i) >>1=== wrr_gnt){
+                        var index_cnt = MuxCase(0.U,(i to i+depth) map{index => (req(index.U % depth.U) === true.B) -> index.U % depth.U} )
+                        gnt_pre := (1.U << index_cnt)
+                        wt_left_nxt := new_wt_left(index_cnt)
+                }
+            }
+        } .otherwise {
+            gnt_pre := wrr_gnt
+            wt_left_nxt := wt_left - 1.U
+        }
+
+        when((!io.gnt_busy) & (req.asUInt() =/= 0.U(depth.W))) {
+            wrr_gnt := gnt
+            wt_left := wt_left_nxt
+        }
+    }
+}
 
 class read_eg_arb extends Module {
     val io = IO(new Bundle() {

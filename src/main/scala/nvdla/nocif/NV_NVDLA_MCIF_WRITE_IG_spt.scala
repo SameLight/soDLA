@@ -27,6 +27,4 @@ class NV_NVDLA_MCIF_WRITE_IG_spt(conf:nvdlaConfig) extends Module {
     val pwrbus_ram_pd = Input(UInt(32.W))
   })
 
-
-
 }
