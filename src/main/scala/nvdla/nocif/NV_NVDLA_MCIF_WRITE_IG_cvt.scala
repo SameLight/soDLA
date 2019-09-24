@@ -188,7 +188,7 @@ class NV_NVDLA_MCIF_WRITE_IG_cvt(implicit conf:nvdlaConfig) extends Module {
         os_cnt_sub    := Mux(os_cnt_sub_en,eg2ig_axi_len_d+1.U,0.U)
         cfg_wr_os_cnt := io.reg2dp_wr_os_cnt(7,0)
         wr_os_cnt_ext := Cat(false.B,cfg_wr_os_cnt)
-        os_cnt_full   := os_inp_nxt>(wr_os_cnt_ext+1.U)
+        os_cnt_full   := os_inp_nxt > (wr_os_cnt_ext+1.U)
 
         os_adv  := os_cnt_add(2,0) =/= os_cnt_sub(2,0)
 
@@ -200,7 +200,7 @@ class NV_NVDLA_MCIF_WRITE_IG_cvt(implicit conf:nvdlaConfig) extends Module {
 
         axi_cmd_vld      := is_first_cmd_dat_vld & io.cq_wr_prdy & axi_dat_rdy
         //pipe_p3
-        val pipe_p3 = Module(new NV_NVDLA_BC_pipe(conf.NVDLA_MEM_ADDRESS_WIDTH+6))
+        val pipe_p3 = Module(new NV_NVDLA_IS_pipe(conf.NVDLA_MEM_ADDRESS_WIDTH+6))
         pipe_p3.io.clk  := io.nvdla_core_clk
 
         pipe_p3.io.vi   := axi_cmd_vld
@@ -213,7 +213,7 @@ class NV_NVDLA_MCIF_WRITE_IG_cvt(implicit conf:nvdlaConfig) extends Module {
 
         axi_dat_vld := dat_vld & (~is_first_beat || (os_cmd_vld & io.cq_wr_prdy & axi_cmd_rdy))
         //pipe_p4
-        val pipe_p4 = Module(new NV_NVDLA_BC_pipe(conf.NVDLA_PRIMARY_MEMIF_WIDTH+conf.NVDLA_PRIMARY_MEMIF_STRB+1))
+        val pipe_p4 = Module(new NV_NVDLA_IS_pipe(conf.NVDLA_PRIMARY_MEMIF_WIDTH+conf.NVDLA_PRIMARY_MEMIF_STRB+1))
         pipe_p4.io.clk  := io.nvdla_core_clk
 
         pipe_p4.io.vi   := axi_dat_vld

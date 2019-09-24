@@ -65,8 +65,8 @@ class NV_NVDLA_MCIF_WRITE_IG_arb (implicit conf:nvdlaConfig) extends Module {
     val src_cmd_vlds    = VecInit((0 to conf.WDMA_NUM-1) map { i => src_cmd_camp_vld(i)}).asUInt
 
 
-    val src_dat_rdy_sum      = Wire(Bool())
-    val src_dat_vld_sum      = Wire(Bool())
+    val src_dat_rdy_sum  = Wire(Bool())
+    val src_dat_vld_sum  = Wire(Bool())
     val src_dat_vlds    = VecInit((0 to conf.WDMA_NUM-1) map { i => src_dat_vld(i)}).asUInt
     val src_dat_gnts    = VecInit((0 to conf.WDMA_NUM-1) map { i => all_gnts(i)&src_dat_vlds(i)}).asUInt
     //val src_dat_rdys    = Wire(Bool())
